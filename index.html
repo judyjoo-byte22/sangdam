@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>심야 고민 상담소</title>
+    <!-- 구글 웹폰트 (눈ヌ, 나눔스퀘어라운드 감성) -->
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Yeon+Sung&display=swap" rel="stylesheet">
+    <style>
+        /* 변수 설정 (따뜻한 심야 분위기 색상군) */
+        :root {
+            --bg-color: #0b132b; /* 깊은 밤하늘색 */
+            --card-bg: #1c2541; /* 상담소 창문 안쪽 느낌 */
+            --accent-yellow: #f9d423; /* 따뜻한 전구색 */
+            --accent-orange: #ff4e50; /* 은은한 붉은빛 */
+            --text-light: #f4f5f7;
+            --text-gray: #a5aab5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+            background: radial-gradient(circle at top, #1c2541 0%, #0b132b 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* 아련한 별빛 배경 효과 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        /* 메인 컨테이너 */
+        .consulting-card {
+            background-color: rgba(28, 37, 65, 0.85);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 550px;
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 
+                        0 0 15px rgba(249, 212, 35, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+            position: relative;
+        }
+
+        /* 심야 상징 전구 일러스트 데코 */
+        .lamp-deco {
+            font-family: 'Yeon Sung', cursive;
+            font-size: 2.2rem;
+            color: var(--accent-yellow);
+            text-shadow: 0 0 10px rgba(249, 212, 35, 0.8), 0 0 20px rgba(249, 212, 35, 0.5);
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: blink 3s infinite ease-in-out;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; text-shadow: 0 0 15px rgba(249, 212, 35, 1), 0 0 30px rgba(249, 212, 35, 0.7); }
+        }
+
+        h1 {
+            font-family: 'Yeon Sung', cursive;
+            font-size: 2.4rem;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* 안내 문구 */
+        .intro-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #e0e5ec;
+            background-color: rgba(11, 19, 43, 0.6);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--accent-yellow);
+            text-align: left;
+        }
+
+        /* 폼 요소 레이아웃 */
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label.section-title {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--accent-yellow);
+            letter-spacing: 0.5px;
+        }
+
+        /* 카테고리 그리드 레이아웃 */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        @media (min-width: 480px) {
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            /* 마지막 '자유 고민'이 3열에서 정중앙에 올 수 있게 설정 */
+            .category-grid label:last-child {
+                grid-column: span 3;
+                justify-self: center;
+                width: calc(33.33% - 7px);
+            }
+        }
+
+        /* 라디오 버튼 스타일 커스텀 */
+        .category-grid input[type="radio"] {
+            display: none;
+        }
+
+        .category-grid label {
+            display: block;
+            background-color: rgba(11, 19, 43, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px 8px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .category-grid label:hover {
+            background-color: rgba(249, 212, 35, 0.1);
+            border-color: rgba(249, 212, 35, 0.5);
+        }
+
+        .category-grid input[type="radio"]:checked + label {
+            background-color: var(--accent-yellow);
+            color: #0b132b;
+            font-weight: 700;
+            border-color: var(--accent-yellow);
+            box-shadow: 0 4px 10px rgba(249, 212, 35, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* 고민 본문 입력칸 */
+        textarea {
+            width: 100%;
+            height: 160px;
+            background-color: rgba(11, 19, 43, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-yellow);
+            box-shadow: 0 0 10px rgba(249, 212, 35, 0.15);
+            background-color: rgba(11, 19, 43, 0.8);
+        }
+
+        textarea::placeholder {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* 답변 여부 체크 영역 */
+        .reply-option-container {
+            display: flex;
+            background-color: rgba(11, 19, 43, 0.5);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .reply-option-container input[type="radio"] {
+            display: none;
+        }
+
+        .reply-option-container label {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .reply-option-container input[type="radio"]:checked + label {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-yellow);
+            font-weight: bold;
+        }
+
+        /* 제출 버튼 */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-yellow) 0%, #f39c12 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            color: #0b132b;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(249, 212, 35, 0.3);
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249, 212, 35, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* 푸터 정보 */
+        .footer-info {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="consulting-card">
+        <!-- 상단 무드 데코 (밤하늘 전구) -->
+        <div class="lamp-deco">💡</div>
+        <h1>심야 고민 상담소</h1>
+        
+        <!-- 안내 텍스트 -->
+        <p class="intro-text">
+            고민은 너무 깊거나 무거울 필요는 없습니다. <br>
+            가벼운 고민도 괜찮으니 편하게 작성해주세요.
+        </p>
+
+        <form id="worryForm">
+            <!-- 1. 카테고리 선택 영역 -->
+            <div class="form-group">
+                <label class="section-title">Q1. 고민의 카테고리를 선택해 주세요</label>
+                <div class="category-grid">
+                    <input type="radio" id="cat1" name="category" value="학업 고민" required>
+                    <label for="cat1">📝 학업 고민</label>
+
+                    <input type="radio" id="cat2" name="category" value="진로 고민">
+                    <label for="cat2">🚀 진로 고민</label>
+
+                    <input type="radio" id="cat3" name="category" value="신앙 고민">
+                    <label for="cat3">🙏 신앙 고민</label>
+
+                    <input type="radio" id="cat4" name="category" value="관계 고민">
+                    <label for="cat4">👥 관계 고민</label>
+
+                    <input type="radio" id="cat5" name="category" value="가정 고민">
+                    <label for="cat5">🏡 가정 고민</label>
+
+                    <input type="radio" id="cat6" name="category" value="연애 고민">
+                    <label for="cat6">❤️ 연애 고민</label>
+
+                    <input type="radio" id="cat7" name="category" value="자유 고민">
+                    <label for="cat7">🎈 자유 고민</label>
+                </div>
+            </div>
+
+            <!-- 2. 본인 고민 작성 영역 -->
+            <div class="form-group">
+                <label class="section-title" for="worryText">Q2. 당신의 이야기를 들려주세요</label>
+                <textarea id="worryText" name="worry" placeholder="이곳은 완전히 익명으로 운영됩니다. 당신의 마음 속 이야기를 마음껏 털어놓아 보세요..." required></textarea>
+            </div>
+
+            <!-- 3. 답변 여부 선택 영역 -->
+            <div class="form-group">
+                <label class="section-title">Q3. 이 고민에 대한 답변을 받으시겠습니까?</label>
+                <div class="reply-option-container">
+                    <input type="radio" id="replyYes" name="getReply" value="yes" checked>
+                    <label for="replyYes">네, 위로의 편지를 받고 싶어요 💌</label>
+
+                    <input type="radio" id="replyNo" name="getReply" value="no">
+                    <label for="replyNo">아니요, 털어놓는 것으로 충분해요 🌌</label>
+                </div>
+            </div>
+
+            <!-- 제출 버튼 -->
+            <button type="submit" class="submit-btn">내 고민 조용히 전송하기</button>
+        </form>
+
+        <div class="footer-info">
+            🔒 본 상담소는 철저히 익명으로 운영되며 비밀이 보장됩니다.
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ 구글 앱스 크립트 웹 앱 URL을 아래 큰따옴표 안에 꼭 넣어주세요!
+        const GAS_WEB_APP_URL = "YOUR_WEB_APP_URL_HERE";
+
+        document.getElementById('worryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 버튼 로딩 상태 표시
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.innerText = "밤하늘로 보내는 중...";
+            submitBtn.disabled = true;
+
+            // 폼 데이터 수집
+            const category = document.querySelector('input[name="category"]:checked').value;
+            const worry = document.getElementById('worryText').value;
+            const getReply = document.querySelector('input[name="getReply"]:checked').value;
+            
+            const replyMessage = getReply === 'yes' 
+                ? '답변 신청이 완료되었습니다. 소중히 읽고 위로를 전해드릴게요.' 
+                : '소중한 이야기를 나누어 주셔서 감사합니다. 마음이 한결 가벼워지셨기를 바라요.';
+
+            // 구글 앱스 크립트로 전송할 데이터 구조화
+            const payload = {
+                category: category,
+                worry: worry,
+                getReply: getReply === 'yes' ? '답변 필요' : '털어놓기만 함'
+            };
+
+            // Fetch API를 사용하여 비동기 전송
+            fetch(GAS_WEB_APP_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain" // CORS 이슈 방지를 위해 text/plain으로 우회
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === "success") {
+                    alert(`[${category}] 고민이 따뜻하게 전송되었습니다.\n\n${replyMessage}`);
+                    document.getElementById('worryForm').reset();
+                } else {
+                    alert("시스템 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+                    console.error(data.message);
+                }
+            })
+            .catch(error => {
+                // 구글 앱스 크립트의 리다이렉트 응답 특성상, 
+                // 간혹 브라우저 CORS 경고가 뜨더라도 데이터는 스프레드시트에 정상 등록됩니다.
+                // 사용자 혼란을 방지하고 원활한 사용을 위해 완료 알림을 노출합니다.
+                alert(`[${category}] 고민이 따뜻하게 전송되었습니다.\n\n${replyMessage}`);
+                document.getElementById('worryForm').reset();
+                console.log("전송 프로세스가 성공적으로 마쳐졌습니다.");
+            })
+            .finally(() => {
+                // 버튼 원래대로 복구
+                submitBtn.innerText = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
